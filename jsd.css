@@ -23,16 +23,6 @@ input[type=text] {
     width: 80%;
     background: #f1f1f1;
 }
-button {
-    width: 20%;
-    padding: 10px;
-    background: #2196F3;
-    color: white;
-    font-size: 17px;
-    border: none;
-    border-left: none;
-    cursor: pointer;
-}
 #time{
     display: flex;
     justify-content: center;
@@ -45,14 +35,92 @@ button {
     background-color: rgba(61, 60, 60, 0.5)
 }
 dialog {
-    background-color: rgba(61, 60, 60, 0.9);
+    background-color: rgba(61, 60, 60, 0.95);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding:100px;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 420px;
+    width: 90%;
+    box-sizing: border-box;
 }
+
+/* make the form fill the dialog so we can size the iframe reliably */
+dialog form[method="dialog"]{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 80vh; /* desktop/tablet default */
+  margin: 0;
+}
+
+/* iframe fills available space inside the form */
 iframe{
-    width: 300px;
-    height: 735px;
+    width: 100%;
+    height: 100%;
     border: none;
+    flex: 1 1 auto;
+    min-height: 300px;
+}
+
+/* Responsive: on small screens (phones) make dialog full-screen */
+@media (max-width: 480px) {
+  dialog {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    border-radius: 0;
+    padding: 0;
+  }
+  dialog::backdrop {
+    background: rgba(0,0,0,0.6);
+  }
+  dialog form[method="dialog"]{
+    height: 100vh;
+    padding: 12px;
+  }
+  iframe{
+    height: calc(100vh - 60px); /* leave room for close button */
+  }
+  /* style the close button row to stay visible on phone */
+  dialog p {
+    margin: 8px 0 0;
+    text-align: right;
+  }
+}
+
+#app {
+  width: 90%;
+  max-width: 400px;
+  background-color: #111;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+#p{
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+#powerBtn{
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
 }
