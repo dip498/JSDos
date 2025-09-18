@@ -3,51 +3,783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jsd os</title>
+    <title>JSD OS</title>
+    <!-- Using Tailwind CSS for a modern, responsive layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a clean, modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Using the user-provided favicon -->
     <link rel="icon" href="logo.ico">
-    <link rel="stylesheet" href="jsd.css">
+
+    <style>
+        /* Custom styles to complement Tailwind CSS */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('walpaper.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            overflow: hidden; /* Prevents scrolling the 'desktop' */
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        /* Styling for the main phone-like container */
+        .os-container {
+            max-width: 450px; /* Simulates a phone's width */
+            height: 95vh;   /* Simulates a phone's height */
+            max-height: 900px;
+            margin: 2.5vh auto;
+            border-radius: 3rem;
+            border: 10px solid #1a1a1a;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Ensures content stays within the rounded corners */
+        }
+
+        /* Glassmorphism effect for modals and dock */
+        .glass-effect {
+            background: rgba(40, 40, 40, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation for modals */
+        .modal {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Control Center styles */
+        #control-center {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .control-toggle.active {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+        }
+
+        /* App icon styles - updated for MIUI 'squircle' look */
+        .app-icon img, .app-icon svg {
+            width: 64px;
+            height: 64px;
+            border-radius: 22px; /* Squircle shape */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+        }
+        .app-icon:hover img, .app-icon:hover svg {
+            transform: scale(1.1);
+        }
+        .app-icon p {
+             font-size: 0.8rem;
+             margin-top: 0.5rem;
+             text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        #app-grid-container {
+            display: flex;
+            transition: transform 0.4s ease-in-out;
+        }
+        .app-page {
+            min-width: 100%;
+            flex-shrink: 0;
+        }
+
+        #pagination-dots .dot {
+            transition: background-color 0.3s ease;
+        }
+        #pagination-dots .dot.active {
+            background-color: white;
+        }
+
+
+        /* Lock Screen Styles */
+        #lock-screen {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Custom CSS for toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3b82f6;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6;
+        }
+
+        /* Calendar Styles */
+        #calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+        .calendar-day { text-align: center; padding: 0.5rem; }
+        .calendar-day.today { background-color: #3b82f6; border-radius: 50%; }
+
+        /* Dialer Styles */
+        .dialer-btn {
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+         .dialer-btn:active { background: rgba(255,255,255,0.4); }
+
+         /* Tic-Tac-Toe Game Styles */
+        .tic-tac-toe-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 300px;
+            height: 300px;
+        }
+        .tic-tac-toe-cell {
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
-<body>
-    <header>
-        <p>v1.0</p>
-        <div id="google">
-            <input type="text" id="search" placeholder="Search with Google">
-            <button onclick="search()">Search</button>
-            <select id="power" onchange="power()">
-                <option value="" disabled selected>Power</option>
-                <option value="shutdown">Shutdown</option>
-                <option value="restart">Restart</option>
-            </select>
-        </div>
-    </header>
-      <div id="time">
-            <p id="hours">00</p>
-            <p>:</p>
-            <p id="minutes">00</p>
-            <p>:</p>
-            <p id="seconds">00</p>
-        </div>
-    <div id="app">
-        <div id="poorbank">
-            <a href="https://dip498.github.io/poorbank/">
-                <img src="poor.png" alt="Poorbank Logo">
-                <p>Poorbank</p>
-            </a>
-        </div>
-        <div id="wather">
-            <a href="https://moccasin-bonnibelle-48.tiiny.site">
-                <img src="weather.png" alt="Wather Logo">
-                <p>Wather</p>
-            </a>
-            <div id="setting">
-                <a href="setting.html">
-                    <img src="setting.png" alt="Setting Logo">
-                    <p>Setting</p>
-                </a>
+<body class="bg-gray-900 flex items-center justify-center h-screen">
+
+    <!-- Main OS container -->
+    <div class="os-container">
+
+        <!-- Lock Screen -->
+        <div id="lock-screen" class="absolute inset-0 z-50 flex flex-col justify-between items-center p-8 text-center">
+            <div>
+                <p id="lock-date" class="text-xl font-medium text-gray-300"></p>
+                <p id="lock-time" class="text-8xl font-bold"></p>
+            </div>
+            <div class="flex flex-col items-center">
+                <p class="mb-4">Tap to Unlock</p>
+                <button onclick="unlock()" class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </button>
             </div>
         </div>
+
+        <!-- Control Center (hidden by default) -->
+        <div id="control-center" class="absolute top-0 left-0 right-0 bg-black/40 backdrop-blur-xl p-4 pt-8 rounded-b-3xl shadow-lg z-20 -translate-y-full">
+             <div class="grid grid-cols-4 gap-4 mb-4">
+                <div id="wifi-toggle" class="control-toggle active flex flex-col items-center justify-center bg-white/20 aspect-square rounded-2xl p-2 cursor-pointer" onclick="toggleControl(this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.555a5.5 5.5 0 017.778 0M12 20.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zM3.667 11.222a11 11 0 0115.666 0"/></svg><span class="text-xs">Wi-Fi</span></div>
+                <div id="vpn-toggle" class="control-toggle flex flex-col items-center justify-center bg-white/20 aspect-square rounded-2xl p-2 cursor-pointer" onclick="toggleVpnFromControlCenter()"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span class="text-xs">VPN</span></div>
+                <div id="airplane-toggle" class="control-toggle flex flex-col items-center justify-center bg-white/20 aspect-square rounded-2xl p-2 cursor-pointer" onclick="toggleControl(this)"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg><span class="text-xs">Airplane</span></div>
+            </div>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg><input type="range" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"></div>
+                <div class="flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.858 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.858l4.707-4.707a1 1 0 011.414 0V19.7a1 1 0 01-1.414 0L5.858 15z"/></svg><input type="range" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"></div>
+            </div>
+            <div class="w-16 h-1.5 bg-gray-400 rounded-full mx-auto mt-6 cursor-pointer" onclick="toggleControlCenter()"></div>
+        </div>
+
+        <!-- Status Bar -->
+        <header class="flex justify-between items-center px-6 py-3 text-sm font-semibold cursor-pointer z-10" onclick="toggleControlCenter()">
+            <div id="time-status" class="flex items-center space-x-1"><span id="hours">00</span>:<span id="minutes">00</span><span id="vpn-status-icon" class="hidden text-blue-400 font-bold text-xs">[VPN]</span></div>
+            <div class="flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.555a5.5 5.5 0 017.778 0M12 20.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zM3.667 11.222a11 11 0 0115.666 0"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.75V11.25a9 9 0 00-9-9h-1.5a9 9 0 00-9 9v1.5a9 9 0 009 9H12a9 9 0 009-9zM21 12.75h-9"/></svg></div>
+        </header>
+
+        <!-- Main content: Apps -->
+        <main class="flex-grow p-4 overflow-hidden">
+            <div id="app-grid-container">
+                <!-- Page 1 -->
+                <div class="app-page grid grid-cols-4 gap-4 text-center">
+                    <div class="app-icon cursor-pointer" onclick="openAppWindow('https://moccasin-bonnibelle-48.tiiny.site', 'Weather')"><img src="weather.png" alt="Weather Logo"><p>Weather</p></div>
+                    <div id="setting-app" class="app-icon cursor-pointer"><img src="setting.png" alt="Setting Logo"><p>Settings</p></div>
+                    <div id="calculator-app" class="app-icon cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 bg-gray-700 p-3 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 14h.01M12 17h.01M15 17h.01M15 11h.01M12 11h.01M9 11h.01M4 7h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z" /></svg><p>Calculator</p></div>
+                    <div id="calendar-app" class="app-icon cursor-pointer"><svg class="mx-auto bg-white text-blue-600 p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg><p>Calendar</p></div>
+                    <div id="browser-app" class="app-icon cursor-pointer"><svg class="mx-auto bg-white text-green-500 p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><p>Browser</p></div>
+                    <div id="app-store-app" class="app-icon cursor-pointer"><svg class="mx-auto bg-blue-600 text-white p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 9l4 1.5V21h12v-8.5L23 9 12 2zm6 17h-4v-6h4v6zM10 5.47l4 2.4v.01l-4-2.4V5.47zM5 12.27l7 4.2 7-4.2V13h-2v-1.27l-5 3-5-3V13H5v-.73z"/></svg><p>App Store</p></div>
+                    <div id="tic-tac-toe-app" class="app-icon cursor-pointer"><svg class="mx-auto bg-yellow-400 text-black p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14h-4v-4h4v4zm0-6h-4V5h4v6zm-6 6H5v-4h4v4zm0-6H5V5h4v6z"/></svg><p>TicTacToe</p></div>
+                    <div class="app-icon cursor-pointer"><svg class="mx-auto bg-gray-200 text-gray-800 p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg><p>Messages</p></div>
+                </div>
+                 <!-- Page 2 -->
+                <div class="app-page grid grid-cols-4 gap-4 text-center">
+                    <div class="app-icon cursor-pointer"><svg class="mx-auto bg-black text-white p-2" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><p>Camera</p></div>
+                    <div class="app-icon cursor-pointer"><svg class="mx-auto bg-white text-black p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><p>Clock</p></div>
+                    <div class="app-icon cursor-pointer"><svg class="mx-auto bg-green-500 text-white p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><p>Maps</p></div>
+                    <div class="app-icon cursor-pointer"><svg class="mx-auto bg-red-600 text-white p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><p>Music</p></div>
+                     <!-- 18+ Mode Apps (hidden by default) -->
+                    <div id="gallery-app" class="app-icon cursor-pointer hidden"><svg class="mx-auto bg-gradient-to-br from-purple-500 to-red-500 text-white p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg><p>Gallery</p></div>
+                    <div id="video-app" class="app-icon cursor-pointer hidden"><svg class="mx-auto bg-red-700 text-white p-2" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><p>Videos</p></div>
+                </div>
+            </div>
+        </main>
+        
+        <div id="pagination-dots" class="flex justify-center items-center space-x-2 my-2"></div>
+
+        <!-- Dock -->
+        <footer class="p-3">
+            <div class="glass-effect rounded-3xl flex justify-around items-center p-2">
+                <div id="phone-app" class="app-icon cursor-pointer"><svg class="bg-green-500 text-white p-3" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+                <div class="app-icon cursor-pointer" onclick="openAppWindow('https://dip498.github.io/poorbank/', 'Poorbank')"><img src="poor.png" alt="Poorbank Logo"></div>
+                <div id="search-app" class="app-icon cursor-pointer"><svg class="w-16 h-16 bg-blue-500 text-white p-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div>
+                <div id="power-app" class="app-icon cursor-pointer"><svg class="w-16 h-16 bg-red-500 text-white p-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" /></svg></div>
+            </div>
+        </footer>
+
+        <!-- MODALS (hidden by default) -->
+        <div id="modal-container" class="absolute inset-0 z-30 flex items-center justify-center p-4 hidden">
+            
+            <!-- App Window Modal -->
+            <div id="app-window-modal" class="modal hidden w-full h-full"><div class="glass-effect rounded-3xl shadow-2xl flex flex-col overflow-hidden h-full"><div class="flex items-center justify-between p-2 bg-black/20"><span id="app-window-title" class="font-bold ml-3">App</span><button onclick="closeModal()" class="px-3 py-1 bg-red-500 rounded-full font-bold">X</button></div><iframe id="app-window-iframe" class="w-full flex-grow border-0"></iframe></div></div>
+            
+            <!-- Calculator Modal -->
+            <div id="calculator-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+                    <input type="text" id="calc-display" class="w-full bg-transparent text-5xl text-right p-6 focus:outline-none" readonly>
+                    <div class="grid grid-cols-4 gap-px bg-gray-700/50">
+                        <button class="calc-btn bg-gray-500/50 p-6 text-2xl" onclick="clearDisplay()">AC</button>
+                        <button class="calc-btn bg-gray-500/50 p-6 text-2xl" onclick="appendCharacter('(')">(</button>
+                        <button class="calc-btn bg-gray-500/50 p-6 text-2xl" onclick="appendCharacter(')')">)</button>
+                        <button class="calc-btn bg-orange-500/80 p-6 text-2xl" onclick="appendCharacter('/')">÷</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('7')">7</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('8')">8</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('9')">9</button>
+                        <button class="calc-btn bg-orange-500/80 p-6 text-2xl" onclick="appendCharacter('*')">×</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('4')">4</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('5')">5</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('6')">6</button>
+                        <button class="calc-btn bg-orange-500/80 p-6 text-2xl" onclick="appendCharacter('-')">−</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('1')">1</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('2')">2</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('3')">3</button>
+                        <button class="calc-btn bg-orange-500/80 p-6 text-2xl" onclick="appendCharacter('+')">+</button>
+                        <button class="calc-btn col-span-2 bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('0')">0</button>
+                        <button class="calc-btn bg-gray-600/50 p-6 text-2xl" onclick="appendCharacter('.')">.</button>
+                        <button class="calc-btn bg-orange-500/80 p-6 text-2xl" onclick="calculate()">=</button>
+                    </div>
+                     <button onclick="closeModal()" class="w-24 h-1.5 bg-gray-400 rounded-full mx-auto my-3"></button>
+                </div>
+            </div>
+
+            <!-- Search Modal -->
+            <div id="search-modal" class="modal hidden w-full max-w-sm">
+                 <div class="glass-effect rounded-3xl p-6 shadow-2xl flex flex-col items-center">
+                    <h2 class="text-2xl font-bold mb-4">Search Google</h2>
+                    <input type="text" id="search-input" placeholder="What are you looking for?" class="w-full p-3 rounded-xl bg-gray-800/50 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="flex space-x-4 mt-6">
+                        <button onclick="performSearch()" class="px-6 py-2 bg-blue-600 rounded-lg font-semibold">Search</button>
+                        <button onclick="closeModal()" class="px-6 py-2 bg-gray-600/50 rounded-lg font-semibold">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Power Modal -->
+            <div id="power-modal" class="modal hidden w-full max-w-sm">
+                 <div class="glass-effect rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center">
+                    <h2 class="text-2xl font-bold mb-2">Power Options</h2>
+                    <p class="mb-6 text-gray-300">What would you like to do?</p>
+                    <div class="flex flex-col w-full space-y-3">
+                         <button onclick="powerAction('restart')" class="w-full py-3 bg-blue-600 rounded-lg font-semibold">Restart</button>
+                         <button onclick="powerAction('shutdown')" class="w-full py-3 bg-red-600 rounded-lg font-semibold">Shutdown</button>
+                         <button onclick="closeModal()" class="w-full py-3 bg-gray-600/50 rounded-lg font-semibold mt-4">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal (Updated) -->
+            <div id="setting-modal" class="modal hidden w-full max-w-sm">
+                 <div class="glass-effect rounded-3xl p-4 shadow-2xl flex flex-col text-sm">
+                    <h2 class="text-xl font-bold mb-4 text-center">Settings</h2>
+                    <div class="bg-white/10 p-3 rounded-lg mb-2">
+                        <label for="wallpaper-url" class="font-semibold mb-2 block">Set Wallpaper</label>
+                        <div class="flex space-x-2">
+                            <input type="text" id="wallpaper-url" placeholder="Enter image URL" class="w-full p-2 rounded-md bg-gray-700 border border-gray-500 focus:outline-none text-white">
+                            <button onclick="setWallpaper()" class="px-3 bg-blue-600 rounded-md font-semibold">Set</button>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 p-3 rounded-lg mb-2">
+                        <div class="flex justify-between items-center">
+                            <label for="vpn-main-toggle" class="font-semibold">VPN</label>
+                             <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="vpn-main-toggle" id="vpn-main-toggle" onchange="toggleVpnFromSettings()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label for="vpn-main-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <p id="vpn-status-text" class="text-xs text-gray-400 mt-1">VPN is currently off.</p>
+                    </div>
+                    <div class="bg-white/10 p-3 rounded-lg">
+                        <label for="search-mode" class="font-semibold mb-2 block">Search Filter Mode</label>
+                        <select id="search-mode" onchange="updateVpnState()" class="w-full p-2 rounded-md bg-gray-700 border border-gray-500 focus:outline-none">
+                            <option value="off">Standard (No Filter)</option>
+                            <option value="safe">Secure (7+)</option>
+                            <option value="active">Strict (18+)</option>
+                        </select>
+                    </div>
+                    <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-6">Close</button>
+                 </div>
+            </div>
+            
+            <!-- Calendar Modal -->
+            <div id="calendar-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl p-4 shadow-2xl">
+                    <div id="calendar-header" class="flex justify-between items-center mb-4">
+                        <button onclick="changeMonth(-1)">&lt;</button>
+                        <h2 id="month-year" class="text-xl font-bold"></h2>
+                        <button onclick="changeMonth(1)">&gt;</button>
+                    </div>
+                    <div id="calendar-grid"></div>
+                    <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-6">Close</button>
+                </div>
+            </div>
+
+             <!-- Phone/Dialer Modal -->
+            <div id="phone-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl p-4 shadow-2xl flex flex-col items-center">
+                    <input type="text" id="dialer-display" class="w-full bg-transparent text-4xl text-center p-4 focus:outline-none mb-4" readonly>
+                    <div class="grid grid-cols-3 gap-4">
+                        <button class="dialer-btn" onclick="addToDialer('1')">1</button>
+                        <button class="dialer-btn" onclick="addToDialer('2')">2</button>
+                        <button class="dialer-btn" onclick="addToDialer('3')">3</button>
+                        <button class="dialer-btn" onclick="addToDialer('4')">4</button>
+                        <button class="dialer-btn" onclick="addToDialer('5')">5</button>
+                        <button class="dialer-btn" onclick="addToDialer('6')">6</button>
+                        <button class="dialer-btn" onclick="addToDialer('7')">7</button>
+                        <button class="dialer-btn" onclick="addToDialer('8')">8</button>
+                        <button class="dialer-btn" onclick="addToDialer('9')">9</button>
+                        <button class="dialer-btn" onclick="addToDialer('*')">*</button>
+                        <button class="dialer-btn" onclick="addToDialer('0')">0</button>
+                        <button class="dialer-btn" onclick="addToDialer('#')">#</button>
+                    </div>
+                    <div class="flex justify-center w-full mt-6 space-x-4">
+                        <button onclick="makeCall()" class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </button>
+                         <button onclick="closeModal()" class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center">
+                             <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.62.72l1.43 1.43c.54-.15 1.1-.25 1.69-.25.59 0 1.15.1 1.69.25l1.43-1.43C15.15 9.25 13.6 9 12 9zm0 4.5c-.32 0-.63.04-.93.12l1.72 1.72c.08-.3.12-.6.12-.93zM3.42 4.84L2.15 6.12l4.43 4.43c-1.45 2.44-1.18 5.59 1 7.77 2.59 2.59 6.81 2.59 9.4 0 2.18-2.18 2.44-5.33 1-7.77l3.68 3.68 1.27-1.27L3.42 4.84z"/></svg>
+                         </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tic Tac Toe Modal -->
+            <div id="tic-tac-toe-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl p-4 shadow-2xl flex flex-col items-center">
+                    <h2 id="tic-tac-toe-status" class="text-xl font-bold mb-4">Player X's Turn</h2>
+                    <div class="tic-tac-toe-grid" id="tic-tac-toe-grid"></div>
+                    <button onclick="resetTicTacToe()" class="w-full py-2 bg-blue-600/80 rounded-lg font-semibold mt-6">Reset Game</button>
+                    <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-2">Close</button>
+                </div>
+            </div>
+
+             <!-- JSD Browser Modal -->
+             <div id="browser-modal" class="modal hidden w-full h-full">
+                 <div class="glass-effect rounded-3xl shadow-2xl flex flex-col overflow-hidden h-full">
+                     <div class="flex items-center p-2 bg-black/20 space-x-2">
+                         <input type="text" id="browser-search" placeholder="Search or type URL" class="flex-grow p-2 rounded-lg bg-gray-700/80 border-0 focus:outline-none">
+                         <button onclick="browserNavigate()" class="px-3 py-2 bg-blue-600 rounded-lg font-semibold">Go</button>
+                         <button onclick="closeModal()" class="px-3 py-1 bg-red-500 rounded-full font-bold">X</button>
+                     </div>
+                     <iframe id="browser-iframe" class="w-full flex-grow border-0 bg-white"></iframe>
+                 </div>
+             </div>
+
+             <!-- Gallery Modal -->
+            <div id="gallery-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl p-4 shadow-2xl flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 text-center">Gallery</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <img src="https://placehold.co/400x400/f87171/white?text=Img+1" class="rounded-lg aspect-square object-cover">
+                        <img src="https://placehold.co/400x400/fb923c/white?text=Img+2" class="rounded-lg aspect-square object-cover">
+                        <img src="https://placehold.co/400x400/fbbf24/white?text=Img+3" class="rounded-lg aspect-square object-cover">
+                        <img src="https://placehold.co/400x400/a3e635/white?text=Img+4" class="rounded-lg aspect-square object-cover">
+                        <img src="https://placehold.co/400x400/4ade80/white?text=Img+5" class="rounded-lg aspect-square object-cover">
+                        <img src="https://placehold.co/400x400/34d399/white?text=Img+6" class="rounded-lg aspect-square object-cover">
+                    </div>
+                    <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-6">Close</button>
+                </div>
+            </div>
+
+             <!-- Video Player Modal -->
+             <div id="video-modal" class="modal hidden w-full max-w-sm">
+                <div class="glass-effect rounded-3xl p-4 shadow-2xl flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 text-center">Video Player</h2>
+                    <div class="bg-black aspect-video rounded-lg flex items-center justify-center">
+                        <p class="text-gray-400">Video placeholder</p>
+                    </div>
+                    <div class="flex justify-center items-center space-x-6 mt-4">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14.002V5.998a1 1 0 00-1.555-.832L4.23 9.166a1 1 0 000 1.664l4.215 3.999zM11.555 5.166A1 1 0 0010 5.998v8.004a1 1 0 001.555.832l4.215-3.999a1 1 0 000-1.664l-4.215-3.999z"/></svg>
+                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8.002v3.996a1 1 0 001.555.832l3.198-2a1 1 0 000-1.664l-3.198-2z" clip-rule="evenodd"/></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M4.555 5.168A1 1 0 003 5.998v8.004a1 1 0 001.555.832l4.215-3.999a1 1 0 000-1.664L4.555 5.168zM10 14.002V5.998a1 1 0 00-1.555-.832L4.23 9.166a1 1 0 000 1.664l4.215 3.999A1 1 0 0010 14.002z"/></svg>
+                    </div>
+                     <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-6">Close</button>
+                </div>
+             </div>
+
+        </div>
+
     </div>
 
-    <script src="jsd.js"></script>
+    <script>
+        // --- STATE & ELEMENTS ---
+        let isLocked = true;
+        let vpnState = { isOn: false, searchMode: 'off' };
+        let currentAppPage = 0;
+        let calendarDate = new Date();
+
+        const modalContainer = document.getElementById('modal-container');
+        const allModals = document.querySelectorAll('#modal-container .modal');
+        const lockScreen = document.getElementById('lock-screen');
+        const appGridContainer = document.getElementById('app-grid-container');
+        const paginationDotsContainer = document.getElementById('pagination-dots');
+        const appPages = document.querySelectorAll('.app-page');
+        const controlCenter = document.getElementById('control-center');
+        const appIframe = document.getElementById('app-window-iframe');
+        const appTitle = document.getElementById('app-window-title');
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initTime();
+            initWallpaper();
+            initPagination();
+            initEventListeners();
+            initTicTacToe();
+        });
+
+        function initTime() {
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        function initWallpaper() {
+            const savedWallpaper = localStorage.getItem('jsd_wallpaper');
+            if (savedWallpaper) {
+                document.body.style.backgroundImage = `url('${savedWallpaper}')`;
+            }
+        }
+        
+        function initPagination() {
+            for(let i = 0; i < appPages.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot w-2 h-2 rounded-full bg-white/50';
+                if(i === 0) dot.classList.add('active');
+                dot.onclick = () => goToPage(i);
+                paginationDotsContainer.appendChild(dot);
+            }
+        }
+        
+        function initEventListeners() {
+            document.getElementById('setting-app').addEventListener('click', () => openModal('setting-modal'));
+            document.getElementById('calculator-app').addEventListener('click', () => openModal('calculator-modal'));
+            document.getElementById('search-app').addEventListener('click', () => openModal('search-modal'));
+            document.getElementById('power-app').addEventListener('click', () => openModal('power-modal'));
+            document.getElementById('calendar-app').addEventListener('click', () => { renderCalendar(); openModal('calendar-modal'); });
+            document.getElementById('phone-app').addEventListener('click', () => openModal('phone-modal'));
+            document.getElementById('tic-tac-toe-app').addEventListener('click', () => { resetTicTacToe(); openModal('tic-tac-toe-modal'); });
+            document.getElementById('browser-app').addEventListener('click', () => openModal('browser-modal'));
+            document.getElementById('app-store-app').addEventListener('click', () => alert('JSD App Store: Coming Soon!'));
+            document.getElementById('gallery-app').addEventListener('click', () => openModal('gallery-modal'));
+            document.getElementById('video-app').addEventListener('click', () => openModal('video-modal'));
+            document.getElementById('search-input').addEventListener('keyup', e => { if(e.key === 'Enter') performSearch(); });
+        }
+
+        // --- UI & NAVIGATION ---
+        function goToPage(pageIndex) {
+            currentAppPage = pageIndex;
+            appGridContainer.style.transform = `translateX(-${currentAppPage * 100}%)`;
+            const dots = document.querySelectorAll('#pagination-dots .dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentAppPage);
+            });
+        }
+
+        function setWallpaper() {
+            const url = document.getElementById('wallpaper-url').value;
+            if (url) {
+                document.body.style.backgroundImage = `url('${url}')`;
+                localStorage.setItem('jsd_wallpaper', url);
+            }
+        }
+        
+        // --- CORE OS FUNCTIONS ---
+
+        function unlock() {
+            isLocked = false;
+            lockScreen.style.opacity = '0';
+            setTimeout(() => {
+                lockScreen.classList.add('hidden');
+            }, 500);
+        }
+
+        function toggleControlCenter() {
+            if (isLocked) return;
+            controlCenter.classList.toggle('-translate-y-full');
+        }
+
+        function toggleControl(element) {
+            if (isLocked) return;
+            element.classList.toggle('active');
+        }
+
+        function openModal(modalId) {
+            if (isLocked) return;
+            const modalToShow = document.getElementById(modalId);
+            if (!modalToShow) return;
+            allModals.forEach(m => {
+                if (!m.classList.contains('hidden')) {
+                    m.classList.add('hidden');
+                }
+            });
+            modalToShow.classList.remove('hidden');
+            modalContainer.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modalContainer.classList.add('hidden');
+            if (appIframe.src !== 'about:blank') {
+                appIframe.src = 'about:blank';
+            }
+        }
+
+        function openAppWindow(url, title) {
+            appIframe.src = url;
+            appTitle.textContent = title;
+            openModal('app-window-modal');
+        }
+        
+        function updateTime() {
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const lockTimeEl = document.getElementById('lock-time');
+            const lockDateEl = document.getElementById('lock-date');
+            const now = new Date();
+            let h = now.getHours();
+            let m = now.getMinutes();
+            if (hoursEl && minutesEl) {
+                hoursEl.textContent = String(h).padStart(2, '0');
+                minutesEl.textContent = String(m).padStart(2, '0');
+            }
+            if (lockTimeEl && lockDateEl) {
+                lockTimeEl.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                lockDateEl.textContent = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+            }
+        }
+        
+        function powerAction(action) {
+            closeModal();
+            const msgEl = document.createElement('div');
+            msgEl.className = 'absolute inset-0 bg-black/80 flex items-center justify-center z-50 text-2xl';
+            if (action === 'shutdown') {
+                msgEl.textContent = 'Shutting down...';
+                document.body.appendChild(msgEl);
+                setTimeout(() => {
+                    document.body.innerHTML = '';
+                    document.body.style.backgroundColor = 'black';
+                }, 1500);
+            } else if (action === 'restart') {
+                msgEl.textContent = 'Restarting...';
+                document.body.appendChild(msgEl);
+                setTimeout(() => location.reload(), 1500);
+            }
+        }
+        
+        // --- VPN & SETTINGS ---
+
+        function updateVpnState() {
+            vpnState.isOn = document.getElementById('vpn-main-toggle').checked;
+            vpnState.searchMode = document.getElementById('search-mode').value;
+            updateVpnUI();
+        }
+
+        function updateVpnUI() {
+            const vpnToggleControl = document.getElementById('vpn-toggle');
+            const vpnStatusIcon = document.getElementById('vpn-status-icon');
+            const vpnStatusText = document.getElementById('vpn-status-text');
+            const vpnMainToggle = document.getElementById('vpn-main-toggle');
+            const galleryApp = document.getElementById('gallery-app');
+            const videoApp = document.getElementById('video-app');
+
+            vpnMainToggle.checked = vpnState.isOn;
+
+            if (vpnState.isOn) {
+                vpnToggleControl.classList.add('active');
+                vpnStatusIcon.classList.remove('hidden');
+                vpnStatusText.textContent = `VPN is ON. Mode: ${vpnState.searchMode.charAt(0).toUpperCase() + vpnState.searchMode.slice(1)}`;
+
+                // Show/hide 18+ apps based on search mode
+                if(vpnState.searchMode === 'active'){
+                    galleryApp.classList.remove('hidden');
+                    videoApp.classList.remove('hidden');
+                } else {
+                    galleryApp.classList.add('hidden');
+                    videoApp.classList.add('hidden');
+                }
+
+            } else {
+                vpnToggleControl.classList.remove('active');
+                vpnStatusIcon.classList.add('hidden');
+                vpnStatusText.textContent = 'VPN is currently off.';
+                galleryApp.classList.add('hidden');
+                videoApp.classList.add('hidden');
+            }
+        }
+
+        function toggleVpnFromControlCenter() {
+            if (isLocked) return;
+            document.getElementById('vpn-main-toggle').checked = !document.getElementById('vpn-main-toggle').checked;
+            updateVpnState();
+        }
+
+        function toggleVpnFromSettings() {
+            updateVpnState();
+        }
+        
+        // --- BROWSER & SEARCH ---
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value;
+            if (query) {
+                let url = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+                if (vpnState.isOn && (vpnState.searchMode === 'safe' || vpnState.searchMode === 'active')) {
+                    url += '&safe=active';
+                }
+                openAppWindow(url, "Search Results");
+            }
+        }
+
+        function browserNavigate() {
+            let url = document.getElementById('browser-search').value;
+            if (!url.startsWith('http')) {
+                url = `https://www.google.com/search?igu=1&q=${encodeURIComponent(url)}`;
+            }
+            document.getElementById('browser-iframe').src = url;
+        }
+
+        // --- CALENDAR APP ---
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const header = document.getElementById('month-year');
+            const today = new Date();
+            
+            calendarDate.setDate(1);
+            const month = calendarDate.getMonth();
+            const year = calendarDate.getFullYear();
+            
+            header.textContent = `${calendarDate.toLocaleString('default', { month: 'long' })} ${year}`;
+            
+            const firstDayIndex = calendarDate.getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const prevLastDate = new Date(year, month, 0).getDate();
+            
+            grid.innerHTML = '<div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>'; // Weekday headers
+
+            for (let i = firstDayIndex; i > 0; i--) {
+                grid.innerHTML += `<div class="calendar-day text-gray-500">${prevLastDate - i + 1}</div>`;
+            }
+
+            for (let i = 1; i <= lastDate; i++) {
+                let classList = "calendar-day";
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    classList += " today";
+                }
+                grid.innerHTML += `<div class="${classList}">${i}</div>`;
+            }
+        }
+        function changeMonth(change) {
+            calendarDate.setMonth(calendarDate.getMonth() + change);
+            renderCalendar();
+        }
+
+        // --- DIALER APP ---
+        const dialerDisplay = document.getElementById('dialer-display');
+        function addToDialer(num) { dialerDisplay.value += num; }
+        function makeCall() {
+            if (dialerDisplay.value) {
+                alert(`Calling ${dialerDisplay.value}...`);
+                dialerDisplay.value = '';
+            }
+        }
+
+        // --- CALCULATOR ---
+        const display = document.getElementById('calc-display');
+        function appendCharacter(char) {
+            if (display.value === 'Error') display.value = '';
+            display.value += char;
+        }
+        function clearDisplay() { display.value = ''; }
+        function calculate() {
+            try {
+                const result = new Function('return ' + display.value.replace(/×/g, '*').replace(/÷/g, '/'))();
+                if (isNaN(result) || !isFinite(result)) throw new Error("Invalid calculation");
+                display.value = result;
+            } catch (error) {
+                display.value = 'Error';
+            }
+        }
+
+        // --- TIC TAC TOE GAME ---
+        let ticTacToeState = {};
+        const ticTacToeGrid = document.getElementById('tic-tac-toe-grid');
+        const ticTacToeStatus = document.getElementById('tic-tac-toe-status');
+        
+        function initTicTacToe() {
+            ticTacToeGrid.innerHTML = ''; // Clear previous grid
+            for(let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'tic-tac-toe-cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleTicTacToeMove);
+                ticTacToeGrid.appendChild(cell);
+            }
+            resetTicTacToe();
+        }
+
+        function resetTicTacToe() {
+            ticTacToeState = {
+                board: Array(9).fill(null),
+                currentPlayer: 'X',
+                gameOver: false,
+            };
+            document.querySelectorAll('.tic-tac-toe-cell').forEach(cell => cell.textContent = '');
+            ticTacToeStatus.textContent = "Player X's Turn";
+        }
+        
+        function handleTicTacToeMove(event) {
+            const index = event.target.dataset.index;
+            if (ticTacToeState.board[index] || ticTacToeState.gameOver) return;
+
+            ticTacToeState.board[index] = ticTacToeState.currentPlayer;
+            event.target.textContent = ticTacToeState.currentPlayer;
+
+            if (checkWin(ticTacToeState.currentPlayer)) {
+                ticTacToeStatus.textContent = `Player ${ticTacToeState.currentPlayer} Wins!`;
+                ticTacToeState.gameOver = true;
+            } else if (ticTacToeState.board.every(cell => cell)) {
+                ticTacToeStatus.textContent = "It's a Draw!";
+                ticTacToeState.gameOver = true;
+            } else {
+                ticTacToeState.currentPlayer = ticTacToeState.currentPlayer === 'X' ? 'O' : 'X';
+                ticTacToeStatus.textContent = `Player ${ticTacToeState.currentPlayer}'s Turn`;
+            }
+        }
+
+        function checkWin(player) {
+            const winConditions = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+            return winConditions.some(combination => {
+                return combination.every(index => ticTacToeState.board[index] === player);
+            });
+        }
+    </script>
 </body>
 </html>
+
