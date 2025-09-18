@@ -24,22 +24,11 @@ function search() {
     window.location.href = url;
 }
 
-function power() {
-    const action = document.getElementById('power').value;
-
-    if (action === 'shutdown') {
-        alert('Shutdown action triggered. The tab will close in 3 seconds.');
-        // The tab will close after 3 seconds to simulate shutdown
-        setTimeout(() => {
-            window.close();
-        }, 1000); // Changed to 3 seconds for a better user experience
-    } 
-    else if (action === 'restart') {
-        alert('Restart action triggered. The page will now reload.');
-        // This will reload the page to simulate a restart
-        location.reload();
-        
-    }
+function shutdown() {
+    window.close();
+    
 }
-
-// ✅ FIX: Removed the broken "setInterval(time(), 1000);" line from here.
+function restart() {
+    location.reload();
+    
+}

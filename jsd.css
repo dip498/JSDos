@@ -44,3 +44,15 @@ button {
     gap: 10px;
     background-color: rgba(61, 60, 60, 0.5)
 }
+dialog {
+    background-color: rgba(61, 60, 60, 0.9);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding:100px;
+}
+iframe{
+    width: 300px;
+    height: 735px;
+    border: none;
+}
