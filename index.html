@@ -326,6 +326,15 @@
                             <option value="active">Strict (18+)</option>
                         </select>
                     </div>
+                    <div class="bg-white/10 p-3 rounded-lg mt-2">
+                        <label for="dns-mode" class="font-semibold mb-2 block">DNS Configuration</label>
+                        <select id="dns-mode" class="w-full p-2 rounded-md bg-gray-700 border border-gray-500 focus:outline-none">
+                            <option value="auto">Automatic (Default)</option>
+                            <option value="secure">Family Secure DNS</option>
+                            <option value="unfiltered">Unfiltered DNS</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">Select a DNS provider. 'Unfiltered' is recommended for 'Strict (18+)' mode.</p>
+                    </div>
                     <button onclick="closeModal()" class="w-full py-2 bg-gray-600/50 rounded-lg font-semibold mt-6">Close</button>
                  </div>
             </div>
@@ -650,7 +659,8 @@
             const query = document.getElementById('search-input').value;
             if (query) {
                 let url = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
-                if (vpnState.isOn && (vpnState.searchMode === 'safe' || vpnState.searchMode === 'active')) {
+                // Apply search filter only when VPN is on and in 'Secure' mode
+                if (vpnState.isOn && vpnState.searchMode === 'safe') {
                     url += '&safe=active';
                 }
                 openAppWindow(url, "Search Results");
@@ -782,4 +792,5 @@
     </script>
 </body>
 </html>
+
 
