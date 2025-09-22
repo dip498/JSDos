@@ -1,5 +1,5 @@
 body{
-    background-image: url(walpaper.png);
+    background-image: url(walpaper.jpg);
     background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -14,25 +14,28 @@ body{
 header{
     top: 0;
     width: 100%;
-    background-color: rgba(61, 60, 60, 0.5);
+    justify-content: center;
+    display: flex;
+
 }
 input[type=text] {
     padding: 10px;
     font-size: 17px;
     border: none;
-    width: 80%;
-    background: #f1f1f1;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 120px;
+    margin-top: 20px;
 }
 #time{
     display: flex;
     justify-content: center;
     font-size: 50px;
-}
-#app{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    background-color: rgba(61, 60, 60, 0.5)
+    background: linear-gradient(to right, #30CFD0 0%, #7729d6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
 }
 dialog {
     background-color: rgba(61, 60, 60, 0.95);
@@ -72,9 +75,7 @@ iframe{
     border-radius: 0;
     padding: 0;
   }
-  dialog::backdrop {
-    background: rgba(0,0,0,0.6);
-  }
+
   dialog form[method="dialog"]{
     height: 100vh;
     padding: 12px;
@@ -85,18 +86,23 @@ iframe{
   /* style the close button row to stay visible on phone */
   dialog p {
     margin: 8px 0 0;
-    text-align: right;
+    text-align: top right;
   }
 }
 
 #app {
   width: 90%;
   max-width: 400px;
-  background-color: #111;
   padding: 20px;
   border-radius: 10px;
   color: white;
   box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.1);
 }
 #p{
     background-color: red;
