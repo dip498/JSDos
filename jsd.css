@@ -1,5 +1,4 @@
 body{
-    background-image: url(walpaper.jpg);
     background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -91,18 +90,27 @@ iframe{
 }
 
 #app {
-  width: 90%;
-  max-width: 400px;
-  padding: 20px;
-  border-radius: 10px;
+  position: fixed;
+  left: 50%;
+  bottom: env(safe-area-inset-bottom, 16px);
+  transform: translateX(-50%);
+  width: min(95%, 420px);
+  max-width: 420px;
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 8px));
+  border-radius: 9999px; /* pill shape like iOS dock */
   color: white;
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px auto;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px) saturate(120%);
+  margin: 0 auto;
+  z-index: 9999;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 #p{
     background-color: red;
